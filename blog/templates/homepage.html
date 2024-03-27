@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if session.logged_in %}
+<!-- ZALOGOWANY -->
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Tytuł</th>
+      <th scope="col">Treść</th>
+      <th scope="col">Data</th>
+      <th scope="col">Opcje</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for post in all_posts %}
+    <tr>
+      <th scope="row">{{ loop.index }}</th>
+      <td>{{ post.title }}</td>
+      <td>{{ post.body | truncate(100, True) }}</td>
+      <td>{{ post.pub_date.strftime('%Y-%m-%d') }}</td>
+      <td>
+        <a href="{{ url_for('edit_or_create_entry', entry_id=post.id) }}" class="btn btn-primary">Edytuj</a>
+        
+        <!-- USUWANIE -->
+        <form action="{{ url_for('delete_entry', entry_id=post.id) }}" method="post" class="d-inline">
+          <button type="submit" class="btn btn-danger">Usuń</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<!-- NIEZALOGOWANY-->
+{% for post in all_posts %}
+<div>
+   <div>
+       <h2 class="d-inline-block">{{ post.title }}</h2>
+       <p>{{ post.pub_date.strftime('%Y-%m-%d') }} </p>
+       <p>
+           {{ post.body}}
+       </p>
+   </div>
+</div>
+{% endfor %}
+{% endif %}
+
+{% endblock %}
